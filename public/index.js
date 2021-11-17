@@ -47,6 +47,22 @@ async function main() {
       ],
     },
   });
+
+  new Chart(averagePriceChartCanvas.getContext("2d"), {
+    type: "pie",
+    data: {
+      labels: stocks.map((stock) => stock.meta.symbol),
+      datasets: [
+        {
+          label: "Average Price",
+          data: stocks.map((stock) => averageStock(stock.values)),
+          backgroundColor: stocks.map((stock) => getColor(stock.meta.symbol)),
+          borderColor: stocks.map((stock) => getColor(stock.meta.symbol)),
+          borderWidth: 1,
+        },
+      ],
+    },
+  });
 }
 
 main();
@@ -67,11 +83,19 @@ function getColor(stock) {
 }
 
 function highestStock(prices) {
-  let stock = 0;
-  prices.forEach((price) => {
-    if (parseFloat(price.high) > stock) {
-      stock = price.high;
+  let price = 0;
+  prices.forEach((stock) => {
+    if (parseFloat(stock.high) > price) {
+      price = stock.high;
     }
   });
-  return stock;
+  return price;
+}
+
+function averageStock(prices) {
+  let average = 0;
+  prices.forEach((stock) => {
+    average += parseFloat(stock.high / prices.length);
+  });
+  return average;
 }
