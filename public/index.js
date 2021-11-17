@@ -31,6 +31,22 @@ async function main() {
       })),
     },
   });
+
+  new Chart(highestPriceChartCanvas.getContext("2d"), {
+    type: "bar",
+    data: {
+      labels: stocks.map((stock) => stock.meta.symbol),
+      datasets: [
+        {
+          label: "Highest Price",
+          data: stocks.map((stock) => highestStock(stock.values)),
+          backgroundColor: stocks.map((stock) => getColor(stock.meta.symbol)),
+          borderColor: stocks.map((stock) => getColor(stock.meta.symbol)),
+          borderWidth: 1,
+        },
+      ],
+    },
+  });
 }
 
 main();
@@ -48,4 +64,14 @@ function getColor(stock) {
   if (stock === "BNTX") {
     return "rgba(166, 43, 158, 0.7)";
   }
+}
+
+function highestStock(prices) {
+  let stock = 0;
+  prices.forEach((price) => {
+    if (parseFloat(price.high) > stock) {
+      stock = price.high;
+    }
+  });
+  return stock;
 }
